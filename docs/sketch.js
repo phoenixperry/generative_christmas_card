@@ -1,6 +1,6 @@
 
 
-let treeLevels = 5; // Number of levels in the tree
+let treeLevels = 9; // Number of levels in the tree
 let treeWidth = 200; // Width of the base of the tree
 let treeHeight = 300; // Total height of the tree
 let treeColor;
@@ -9,7 +9,11 @@ let levelHeight;
 let snowflakes = []; // array to hold snowflakes
 let colorIndex = 0; // Index to keep track of the current color
 let lastChangeTime = 0; // Time since the last color change
+
 let colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']; // Rainbow colors array
+
+let mouseOverTree = false;
+let treeLights = []; // Array to hold the tree lights
 
 function setup() {
    treeWidth = width*.5 // Width of the base of the tree
@@ -17,14 +21,13 @@ function setup() {
   createCanvas(windowWidth, windowHeight); // Full screen canvas
   fill(255);
   noStroke();
-  treeColor = color(25, 200, 25); // Green color for the tree
   levelHeight = treeHeight / treeLevels; // Height of each level of the tree
   frameRate(30); // Set the frame rate to 30 frames per second
 }
 
 function draw() {
-  treeWidth = width*.5
-  treeHeight = height*.3; 
+  treeWidth = width*.3
+  treeHeight = height*.5; 
   background(25); // Set a dark background for contrast with the snowflakes
 
   // create a random number of snowflakes each frame (up to a maximum of 50)
@@ -41,7 +44,24 @@ function draw() {
     }
     
   }
-  drawNetworkTree(width / 2, height / 2, 200, 300, 5);
+
+
+
+  // Draw the tree with the new dimensions
+  drawNetworkTree(width / 2, height / 2, treeWidth, treeHeight, treeLevels);
+
+
+}
+
+function mousePressed() {
+  
+  if (mouseX > width / 2 - treeWidth / 2 && mouseX < width / 2 + treeWidth / 2 &&
+      mouseY > height / 2 - treeHeight / 2 && mouseY < height / 2 + treeHeight / 2) {
+    // Trigger the lights to fall
+    for (let light of treeLights) {
+      light.falling = true;
+    }
+  }
 }
 
 // snowflake class
@@ -94,18 +114,6 @@ function drawNetworkTree(x, y, baseWidth, height, levels) {
     }
   }
   
-  // Connect the points with lines
-  for (let i = 0; i < points.length; i++) {
-    for (let j = i + 1; j < points.length; j++) {
-      let distance = dist(points[i].pos.x, points[i].pos.y, points[j].pos.x, points[j].pos.y);
-      // Connect points that are close enough to each other
-      if (distance < hSpacing * 1.5) {
-        // stroke(150);
-        // //line(points[i].pos.x, points[i].pos.y, points[j].pos.x, points[j].pos.y);
-      
-      }
-    }
-  }
   
   // Update the color index based on the time interval
   if (millis() - lastChangeTime > 500) { // 0.25 seconds has passed
